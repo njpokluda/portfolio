@@ -852,42 +852,104 @@ body.page-exit {
   font-weight: 700;
 }
 
-/* Mobile accordion variant for work */
+/* ---------- Mobile accordion (mirrors tab content) ---------- */
+.work-accordion {
+  display: none;
+}
+
 @media (max-width: 767px) {
-  .work-tabs {
+  .work-tabs,
+  .work-panels {
     display: none;
   }
-  .work-accordion .work-panel {
+  .work-accordion {
     display: block;
-    opacity: 1;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-card);
-    margin-bottom: var(--space-2);
-    overflow: hidden;
   }
-  .work-accordion .work-panel-summary {
-    padding: 18px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-family: var(--font-display);
-    font-weight: 700;
-    color: var(--color-text);
-  }
-  .work-accordion .work-panel-summary::after {
-    content: "+";
-    color: var(--color-accent);
-    font-size: 1.4rem;
-  }
-  .work-accordion .work-panel[open] .work-panel-summary::after {
-    content: "–";
-  }
-  .work-accordion .work-panel-body {
-    padding: 0 18px 18px;
-    display: grid;
-    gap: var(--space-3);
-  }
+}
+
+.work-acc-item {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  margin-bottom: var(--space-2);
+  overflow: hidden;
+  background: var(--color-surface);
+  transition: border-color var(--t-fast) var(--ease);
+}
+
+.work-acc-item.is-open {
+  border-color: var(--color-accent-line);
+}
+
+.work-acc-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: 18px 20px;
+  background: transparent;
+  border: 0;
+  border-left: 3px solid transparent;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+  letter-spacing: -0.01em;
+  min-height: 44px;
+  transition: color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
+}
+
+.work-acc-header:hover {
+  color: var(--color-accent);
+}
+
+.work-acc-item.is-open .work-acc-header {
+  color: var(--color-accent);
+  border-left-color: var(--color-accent);
+}
+
+.work-acc-chevron {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: var(--color-accent);
+  transition: transform var(--t-med) var(--ease);
+}
+
+.work-acc-item.is-open .work-acc-chevron {
+  transform: rotate(180deg);
+}
+
+.work-acc-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 400ms var(--ease);
+}
+
+.work-acc-body {
+  padding: 4px 20px 22px;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.work-acc-img {
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  aspect-ratio: 16 / 10;
+  border: 1px solid var(--color-border);
+}
+
+.work-acc-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.work-acc-body p {
+  color: var(--color-text-muted);
+  font-size: 0.98rem;
 }
 
 /* ---------- Connect block ---------- */

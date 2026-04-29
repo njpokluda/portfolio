@@ -213,6 +213,68 @@
     });
   }
 
+  /* ---------- Mobile work accordion ---------- */
+  // Click a header to expand its panel via max-height animation,
+  // closing any other open item (single-open behavior).
+  const accordions = document.querySelectorAll('[data-accordion]');
+
+  accordions.forEach(function (root) {
+    const items = root.querySelectorAll('.work-acc-item');
+
+    function closeItem(item) {
+      const header = item.querySelector('.work-acc-header');
+      const panel = item.querySelector('.work-acc-panel');
+      item.classList.remove('is-open');
+      if (header) header.setAttribute('aria-expanded', 'false');
+      if (panel) panel.style.maxHeight = '0px';
+    }
+
+    function openItem(item) {
+      const header = item.querySelector('.work-acc-header');
+      const panel = item.querySelector('.work-acc-panel');
+      item.classList.add('is-open');
+      if (header) header.setAttribute('aria-expanded', 'true');
+      if (panel) panel.style.maxHeight = panel.scrollHeight + 'px';
+    }
+
+    items.forEach(function (item) {
+      const header = item.querySelector('.work-acc-header');
+      if (!header) return;
+      header.addEventListener('click', function () {
+        const isOpen = item.classList.contains('is-open');
+        // Close every item, then open this one if it was closed.
+        items.forEach(closeItem);
+        if (!isOpen) openItem(item);
+      });
+    });
+
+    // After an item finishes opening, content sizes (e.g. images loading)
+    // may shift. Refresh max-height when an image inside loads.
+    root.querySelectorAll('img').forEach(function (img) {
+      img.addEventListener('load', function () {
+        const item = img.closest('.work-acc-item');
+        if (item && item.classList.contains('is-open')) {
+          const panel = item.querySelector('.work-acc-panel');
+          if (panel) panel.style.maxHeight = panel.scrollHeight + 'px';
+        }
+      });
+    });
+
+    // Reset inline max-height on resize so an open panel keeps fitting,
+    // and a closed panel doesn't get stranded with stale height.
+    window.addEventListener('resize', function () {
+      items.forEach(function (item) {
+        const panel = item.querySelector('.work-acc-panel');
+        if (!panel) return;
+        if (item.classList.contains('is-open')) {
+          panel.style.maxHeight = panel.scrollHeight + 'px';
+        } else {
+          panel.style.maxHeight = '0px';
+        }
+      });
+    }, { passive: true });
+  });
+
   /* ---------- Smooth scroll for in-page anchors ---------- */
   // Handle hash links cleanly even when they include a path (e.g. /index.html#work).
   document.addEventListener('click', function (e) {
