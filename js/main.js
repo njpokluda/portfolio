@@ -1,293 +1,235 @@
-/**
- * main.js — Nicholas Pokluda Portfolio
- * Global JavaScript: scroll progress, nav, back-to-top,
- * mobile menu, scroll reveals, stat counters, work tabs,
- * accordion, footer year.
- */
+/* =========================================================
+   Nicholas Pokluda — Portfolio main.js
+   Scroll progress bar, nav scroll state, back-to-top,
+   mobile menu, scroll-reveals, animated stat counters,
+   work tabs, accordion, footer year.
+   ========================================================= */
 
-/* ============================================================
-   SCROLL PROGRESS BAR
-   ============================================================ */
-function initScrollProgress() {
-  const bar = document.getElementById('scroll-progress');
-  if (!bar) return;
+(function () {
+  'use strict';
 
-  function updateProgress() {
-    const scrollTop = window.scrollY || document.documentElement.scrollTop;
-    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-    bar.style.width = Math.min(progress, 100) + '%';
-  }
-
-  window.addEventListener('scroll', updateProgress, { passive: true });
-  updateProgress();
-}
-
-/* ============================================================
-   NAV SCROLL BEHAVIOR (glass background on scroll)
-   ============================================================ */
-function initNavScroll() {
-  const nav = document.querySelector('.site-nav');
-  if (!nav) return;
-
-  function handleNavScroll() {
-    if (window.scrollY > 40) {
-      nav.classList.add('scrolled');
-    } else {
-      nav.classList.remove('scrolled');
-    }
-  }
-
-  window.addEventListener('scroll', handleNavScroll, { passive: true });
-  handleNavScroll();
-}
-
-/* ============================================================
-   BACK TO TOP BUTTON
-   ============================================================ */
-function initBackToTop() {
-  const btn = document.getElementById('back-to-top');
-  if (!btn) return;
-
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 400) {
-      btn.classList.add('visible');
-    } else {
-      btn.classList.remove('visible');
-    }
-  }, { passive: true });
-
-  btn.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-}
-
-/* ============================================================
-   MOBILE HAMBURGER MENU
-   ============================================================ */
-function initMobileMenu() {
-  const hamburger = document.querySelector('.nav-hamburger');
-  const overlay = document.querySelector('.nav-overlay');
-  if (!hamburger || !overlay) return;
-
-  let isOpen = false;
-
-  function openMenu() {
-    isOpen = true;
-    hamburger.classList.add('is-open');
-    overlay.classList.add('is-open');
-    document.body.style.overflow = 'hidden';
-    hamburger.setAttribute('aria-expanded', 'true');
-  }
-
-  function closeMenu() {
-    isOpen = false;
-    hamburger.classList.remove('is-open');
-    overlay.classList.remove('is-open');
-    document.body.style.overflow = '';
-    hamburger.setAttribute('aria-expanded', 'false');
-  }
-
-  hamburger.addEventListener('click', () => {
-    isOpen ? closeMenu() : openMenu();
-  });
-
-  // Close on any overlay link click
-  overlay.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', closeMenu);
-  });
-
-  // Close on Escape key
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && isOpen) closeMenu();
-  });
-}
-
-/* ============================================================
-   HERO ENTRANCE ANIMATIONS
-   ============================================================ */
-function initHeroAnimations() {
-  const elements = [
-    '.availability-badge',
-    '.hero-headline-wrap',
-    '.hero-sub',
-    '.hero-ctas'
-  ];
-
-  // Stagger the additions so CSS transitions fire sequentially
-  elements.forEach((selector, i) => {
-    const el = document.querySelector(selector);
-    if (!el) return;
-    setTimeout(() => el.classList.add('animate-in'), i * 100);
-  });
-}
-
-/* ============================================================
-   SCROLL REVEAL (Intersection Observer)
-   ============================================================ */
-function initScrollReveal() {
-  const elements = document.querySelectorAll('.reveal');
-  if (!elements.length) return;
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-        observer.unobserve(entry.target); // fire once
-      }
-    });
-  }, { threshold: 0.15 });
-
-  elements.forEach(el => observer.observe(el));
-}
-
-/* ============================================================
-   STAT COUNTER ANIMATION
-   ============================================================ */
-function easeOutCubic(t) {
-  return 1 - Math.pow(1 - t, 3);
-}
-
-function animateCounter(el, target, suffix, duration) {
-  const start = performance.now();
-
-  function step(now) {
-    const elapsed = now - start;
-    const progress = Math.min(elapsed / duration, 1);
-    const eased = easeOutCubic(progress);
-    const current = Math.round(eased * target);
-
-    el.textContent = current.toLocaleString() + suffix;
-
-    if (progress < 1) {
-      requestAnimationFrame(step);
-    }
-  }
-
-  requestAnimationFrame(step);
-}
-
-function initStatCounters() {
-  const counters = document.querySelectorAll('[data-count]');
-  if (!counters.length) return;
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const el = entry.target;
-        const target = parseInt(el.dataset.count, 10);
-        const suffix = el.dataset.suffix || '';
-        animateCounter(el, target, suffix, 1800);
-        observer.unobserve(el);
-      }
-    });
-  }, { threshold: 0.5 });
-
-  counters.forEach(el => observer.observe(el));
-}
-
-/* ============================================================
-   WORK SECTION — DESKTOP TABS
-   ============================================================ */
-function initWorkTabs() {
-  const tabBtns = document.querySelectorAll('.tab-btn');
-  const tabPanels = document.querySelectorAll('.tab-panel');
-  if (!tabBtns.length) return;
-
-  tabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const target = btn.dataset.tab;
-
-      // Deactivate all
-      tabBtns.forEach(b => {
-        b.classList.remove('is-active');
-        b.setAttribute('aria-selected', 'false');
-      });
-      tabPanels.forEach(p => {
-        p.classList.remove('is-active');
-        p.style.opacity = '0';
-      });
-
-      // Activate clicked
-      btn.classList.add('is-active');
-      btn.setAttribute('aria-selected', 'true');
-
-      const panel = document.getElementById(target);
-      if (panel) {
-        panel.classList.add('is-active');
-        // Fade in
-        requestAnimationFrame(() => {
-          panel.style.opacity = '1';
-        });
-      }
-    });
-  });
-}
-
-/* ============================================================
-   WORK SECTION — MOBILE ACCORDION
-   ============================================================ */
-function initAccordion() {
-  const items = document.querySelectorAll('.accordion-item');
-  if (!items.length) return;
-
-  items.forEach(item => {
-    const trigger = item.querySelector('.accordion-trigger');
-    if (!trigger) return;
-
-    trigger.addEventListener('click', () => {
-      const isOpen = item.classList.contains('is-open');
-
-      // Close all
-      items.forEach(i => i.classList.remove('is-open'));
-
-      // Toggle clicked
-      if (!isOpen) {
-        item.classList.add('is-open');
-      }
-    });
-  });
-}
-
-/* ============================================================
-   FOOTER YEAR
-   ============================================================ */
-function initFooterYear() {
+  /* ---------- Footer year ---------- */
+  // Set the copyright year dynamically.
   const yearEl = document.getElementById('year');
-  if (yearEl) {
-    yearEl.textContent = new Date().getFullYear();
-  }
-}
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-/* ============================================================
-   SMOOTH SCROLL for anchor links within page
-   ============================================================ */
-function initAnchorScroll() {
-  document.querySelectorAll('a[href^="#"]').forEach(link => {
-    link.addEventListener('click', e => {
-      const id = link.getAttribute('href').slice(1);
-      const target = document.getElementById(id);
+  /* ---------- Scroll progress bar ---------- */
+  // Tracks vertical scroll progress and fills the top bar 0–100%.
+  const progressBar = document.querySelector('.scroll-progress');
+
+  function updateScrollProgress() {
+    if (!progressBar) return;
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const percent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = percent + '%';
+  }
+
+  /* ---------- Nav: scrolled state + back-to-top ---------- */
+  const siteNav = document.querySelector('.site-nav');
+  const backToTop = document.querySelector('.back-to-top');
+
+  function updateNavState() {
+    const y = window.scrollY;
+    if (siteNav) {
+      siteNav.classList.toggle('is-scrolled', y > 24);
+    }
+    if (backToTop) {
+      backToTop.classList.toggle('is-visible', y > 400);
+    }
+  }
+
+  if (backToTop) {
+    backToTop.addEventListener('click', function (e) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  // Combined scroll handler with rAF throttle for smoothness.
+  let scrollScheduled = false;
+  function onScroll() {
+    if (scrollScheduled) return;
+    scrollScheduled = true;
+    requestAnimationFrame(function () {
+      updateScrollProgress();
+      updateNavState();
+      scrollScheduled = false;
+    });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  // Initial state.
+  updateScrollProgress();
+  updateNavState();
+
+  /* ---------- Mobile menu ---------- */
+  const navToggle = document.querySelector('.nav-toggle');
+  const mobileNav = document.querySelector('.mobile-nav');
+
+  function setMobileNav(open) {
+    if (!navToggle || !mobileNav) return;
+    navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    mobileNav.classList.toggle('is-open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+
+  if (navToggle && mobileNav) {
+    navToggle.addEventListener('click', function () {
+      const isOpen = navToggle.getAttribute('aria-expanded') === 'true';
+      setMobileNav(!isOpen);
+    });
+    // Close menu when a link is tapped.
+    mobileNav.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', function () { setMobileNav(false); });
+    });
+    // Close on escape.
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') setMobileNav(false);
+    });
+  }
+
+  /* ---------- Hero load animation ---------- */
+  // Stagger fade-in of hero elements once DOM is parsed.
+  const heroAnimEls = document.querySelectorAll('.hero-anim');
+  if (heroAnimEls.length) {
+    heroAnimEls.forEach(function (el, i) {
+      const delay = parseInt(el.dataset.delay || (i * 150), 10);
+      setTimeout(function () { el.classList.add('is-in'); }, delay);
+    });
+  }
+
+  /* ---------- Scroll reveals ---------- */
+  // IntersectionObserver to fade-up elements as they enter viewport.
+  const revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && revealEls.length) {
+    const revealObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          // Optional stagger via data-stagger index (ms).
+          const delay = parseInt(el.dataset.stagger || 0, 10);
+          if (delay) el.style.transitionDelay = delay + 'ms';
+          el.classList.add('is-visible');
+          revealObserver.unobserve(el);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+    revealEls.forEach(function (el) { revealObserver.observe(el); });
+  } else {
+    // No IO support — show everything.
+    revealEls.forEach(function (el) { el.classList.add('is-visible'); });
+  }
+
+  /* ---------- Animated stat counters ---------- */
+  // Counts up from 0 to the target value when the .stats-band enters view.
+  const counters = document.querySelectorAll('[data-counter]');
+
+  function animateCounter(el) {
+    const target = parseFloat(el.dataset.counter);
+    const duration = parseInt(el.dataset.duration || 1600, 10);
+    const decimals = parseInt(el.dataset.decimals || 0, 10);
+    const startTime = performance.now();
+
+    function frame(now) {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // easeOutCubic for a decelerating finish.
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const value = target * eased;
+      el.textContent = formatNumber(value, target, decimals);
+      if (progress < 1) {
+        requestAnimationFrame(frame);
+      } else {
+        el.textContent = formatNumber(target, target, decimals);
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function formatNumber(value, target, decimals) {
+    // If target is >= 1000, format with K shorthand for display when target is exactly 89000-style large.
+    // We keep this simple: render whole numbers and add 'K' if data-suffix='K'.
+    const fixed = decimals > 0 ? value.toFixed(decimals) : Math.round(value).toString();
+    return fixed;
+  }
+
+  if ('IntersectionObserver' in window && counters.length) {
+    const counterObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          animateCounter(entry.target);
+          counterObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+
+    counters.forEach(function (el) {
+      el.textContent = '0';
+      counterObserver.observe(el);
+    });
+  } else {
+    counters.forEach(function (el) {
+      el.textContent = el.dataset.counter;
+    });
+  }
+
+  /* ---------- Featured work tabs ---------- */
+  const tabs = document.querySelectorAll('[data-tab]');
+  const panels = document.querySelectorAll('[data-panel]');
+
+  function activateTab(name) {
+    tabs.forEach(function (t) {
+      const isActive = t.dataset.tab === name;
+      t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      t.tabIndex = isActive ? 0 : -1;
+    });
+    panels.forEach(function (p) {
+      p.classList.toggle('is-active', p.dataset.panel === name);
+    });
+  }
+
+  if (tabs.length && panels.length) {
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        activateTab(tab.dataset.tab);
+      });
+      tab.addEventListener('keydown', function (e) {
+        const order = Array.from(tabs);
+        const idx = order.indexOf(tab);
+        if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          const next = order[(idx + 1) % order.length];
+          next.focus();
+          activateTab(next.dataset.tab);
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          const prev = order[(idx - 1 + order.length) % order.length];
+          prev.focus();
+          activateTab(prev.dataset.tab);
+        }
+      });
+    });
+  }
+
+  /* ---------- Smooth scroll for in-page anchors ---------- */
+  // Handle hash links cleanly even when they include a path (e.g. /index.html#work).
+  document.addEventListener('click', function (e) {
+    const link = e.target.closest('a[href*="#"]');
+    if (!link) return;
+    const href = link.getAttribute('href');
+    if (!href) return;
+    // Same-page anchor only.
+    const url = new URL(link.href, window.location.href);
+    if (url.pathname === window.location.pathname && url.hash) {
+      const target = document.querySelector(url.hash);
       if (target) {
         e.preventDefault();
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        history.pushState(null, '', url.hash);
       }
-    });
+    }
   });
-}
 
-/* ============================================================
-   INIT — run all on DOMContentLoaded
-   ============================================================ */
-document.addEventListener('DOMContentLoaded', () => {
-  initScrollProgress();
-  initNavScroll();
-  initBackToTop();
-  initMobileMenu();
-  initHeroAnimations();
-  initScrollReveal();
-  initStatCounters();
-  initWorkTabs();
-  initAccordion();
-  initFooterYear();
-  initAnchorScroll();
-});
+})();
