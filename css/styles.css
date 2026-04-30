@@ -558,11 +558,9 @@ body.page-exit {
   100% { transform: translate(80px, -60px) scale(0.95); }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .hero-orb--1 { animation: orb-drift-1 18s infinite ease-in-out alternate; }
-  .hero-orb--2 { animation: orb-drift-2 24s infinite ease-in-out alternate; }
-  .hero-orb--3 { animation: orb-drift-3 20s infinite ease-in-out alternate; }
-}
+.hero-orb--1 { animation: orb-drift-1 18s infinite ease-in-out alternate; }
+.hero-orb--2 { animation: orb-drift-2 24s infinite ease-in-out alternate; }
+.hero-orb--3 { animation: orb-drift-3 20s infinite ease-in-out alternate; }
 
 .hero-content {
   max-width: 900px;
