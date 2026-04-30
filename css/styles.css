@@ -540,34 +540,28 @@ body.page-exit {
   z-index: 1;
 }
 
+@keyframes orb-drift-1 {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(60px, 40px) scale(1.04); }
+  100% { transform: translate(110px, 90px) scale(0.97); }
+}
+
+@keyframes orb-drift-2 {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(-70px, -50px) scale(0.96); }
+  100% { transform: translate(-110px, -90px) scale(1.05); }
+}
+
+@keyframes orb-drift-3 {
+  0%   { transform: translate(0, 0) scale(0.98); }
+  50%  { transform: translate(-50px, 70px) scale(1.03); }
+  100% { transform: translate(80px, -60px) scale(0.95); }
+}
+
 @media (prefers-reduced-motion: no-preference) {
-  .hero-orb--1 {
-    animation: orb-drift-1 18s infinite ease-in-out alternate;
-  }
-  .hero-orb--2 {
-    animation: orb-drift-2 24s infinite ease-in-out alternate;
-  }
-  .hero-orb--3 {
-    animation: orb-drift-3 20s infinite ease-in-out alternate;
-  }
-
-  @keyframes orb-drift-1 {
-    0%   { transform: translate(0, 0) scale(1); }
-    50%  { transform: translate(60px, 40px) scale(1.04); }
-    100% { transform: translate(110px, 90px) scale(0.97); }
-  }
-
-  @keyframes orb-drift-2 {
-    0%   { transform: translate(0, 0) scale(1); }
-    50%  { transform: translate(-70px, -50px) scale(0.96); }
-    100% { transform: translate(-110px, -90px) scale(1.05); }
-  }
-
-  @keyframes orb-drift-3 {
-    0%   { transform: translate(0, 0) scale(0.98); }
-    50%  { transform: translate(-50px, 70px) scale(1.03); }
-    100% { transform: translate(80px, -60px) scale(0.95); }
-  }
+  .hero-orb--1 { animation: orb-drift-1 18s infinite ease-in-out alternate; }
+  .hero-orb--2 { animation: orb-drift-2 24s infinite ease-in-out alternate; }
+  .hero-orb--3 { animation: orb-drift-3 20s infinite ease-in-out alternate; }
 }
 
 .hero-content {
