@@ -316,7 +316,7 @@ body.page-exit {
   border-radius: var(--radius-button);
   position: relative;
   background: transparent;
-  z-index: 110;
+  z-index: 1001;
 }
 
 @media (min-width: 768px) {
@@ -352,6 +352,10 @@ body.page-exit {
   transform: rotate(-45deg);
 }
 
+.nav-toggle[aria-expanded="true"] .bar {
+  background: var(--color-text);
+}
+
 /* Mobile overlay */
 .mobile-nav {
   position: fixed;
@@ -359,7 +363,7 @@ body.page-exit {
   background: rgba(10, 10, 15, 0.97);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  z-index: 105;
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
