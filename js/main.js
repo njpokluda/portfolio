@@ -275,6 +275,31 @@
     }, { passive: true });
   });
 
+  /* ---------- Recommendations: Read more / Read less ---------- */
+  // Toggles the .quote-overflow block on each recommendation card via
+  // max-height transition. Button label flips between "Read more..." and
+  // "Read less". Initialized on DOMContentLoaded (the IIFE runs after
+  // /js/main.js is parsed because of the `defer` attribute).
+  function initReadMore() {
+    const buttons = document.querySelectorAll('.read-more-btn');
+    buttons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        const card = btn.closest('.rec-card');
+        if (!card) return;
+        const overflow = card.querySelector('.quote-overflow');
+        if (!overflow) return;
+        const isOpen = overflow.classList.toggle('is-open');
+        btn.textContent = isOpen ? 'Read less' : 'Read more...';
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initReadMore);
+  } else {
+    initReadMore();
+  }
+
   /* ---------- Smooth scroll for in-page anchors ---------- */
   // Handle hash links cleanly even when they include a path (e.g. /index.html#work).
   document.addEventListener('click', function (e) {
