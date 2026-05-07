@@ -1804,7 +1804,7 @@ body.page-exit {
   background: var(--color-surface);
   max-width: 640px;
   width: 100%;
-  margin: 0 auto 80px auto;
+  margin: 0 auto;
   box-sizing: border-box;
 }
 
