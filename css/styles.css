@@ -316,7 +316,7 @@ body.page-exit {
   border-radius: var(--radius-button);
   position: relative;
   background: transparent;
-  z-index: 1001;
+  z-index: 110;
 }
 
 @media (min-width: 768px) {
@@ -350,10 +350,6 @@ body.page-exit {
 .nav-toggle[aria-expanded="true"] .bar:nth-child(3) {
   top: 21px;
   transform: rotate(-45deg);
-}
-
-.nav-toggle[aria-expanded="true"] .bar {
-  background: var(--color-text);
 }
 
 /* Mobile overlay */
@@ -1859,4 +1855,39 @@ body.page-exit {
 .mobile-nav-backdrop.is-visible {
   opacity: 1;
   pointer-events: auto;
+}
+
+/* ---------- Mobile nav close button ---------- */
+.nav-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+}
+
+.nav-close span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--color-text);
+  border-radius: 2px;
+  position: absolute;
+}
+
+.nav-close span:nth-child(1) {
+  transform: rotate(45deg);
+}
+
+.nav-close span:nth-child(2) {
+  transform: rotate(-45deg);
 }

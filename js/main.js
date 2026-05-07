@@ -104,6 +104,11 @@
     if (navBackdrop) {
       navBackdrop.addEventListener('click', function () { setMobileNav(false); });
     }
+    // Close on dedicated X button inside the overlay.
+    const navClose = mobileNav.querySelector('.nav-close');
+    if (navClose) {
+      navClose.addEventListener('click', function () { setMobileNav(false); });
+    }
   }
 
   /* ---------- Hero load animation ---------- */
