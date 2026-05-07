@@ -64,13 +64,22 @@
   updateNavState();
 
   /* ---------- Mobile menu ---------- */
+  // Open / close paths supported:
+  //   1. Tap the hamburger / X button (44×44 touch target, animates between bars and X via CSS)
+  //   2. Tap a nav link inside the overlay
+  //   3. Tap the dimmed backdrop behind the overlay
+  //   4. Tap empty space inside the overlay (outside the link list)
+  //   5. Press Escape on the keyboard
   const navToggle = document.querySelector('.nav-toggle');
   const mobileNav = document.querySelector('.mobile-nav');
+  const navBackdrop = document.querySelector('.mobile-nav-backdrop');
 
   function setMobileNav(open) {
     if (!navToggle || !mobileNav) return;
     navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    navToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
     mobileNav.classList.toggle('is-open', open);
+    if (navBackdrop) navBackdrop.classList.toggle('is-visible', open);
     document.body.style.overflow = open ? 'hidden' : '';
   }
 
@@ -83,10 +92,18 @@
     mobileNav.querySelectorAll('a').forEach(function (link) {
       link.addEventListener('click', function () { setMobileNav(false); });
     });
+    // Close when tapping empty space inside the overlay (anywhere not a link or its container).
+    mobileNav.addEventListener('click', function (e) {
+      if (e.target === mobileNav) setMobileNav(false);
+    });
     // Close on escape.
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') setMobileNav(false);
     });
+    // Close on backdrop click.
+    if (navBackdrop) {
+      navBackdrop.addEventListener('click', function () { setMobileNav(false); });
+    }
   }
 
   /* ---------- Hero load animation ---------- */
