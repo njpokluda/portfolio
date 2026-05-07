@@ -1188,7 +1188,6 @@ body.page-exit {
 .looking-ahead {
   background: var(--color-surface);
   border-top: 1px solid var(--color-border);
-  border-bottom: 1px solid var(--color-border);
   text-align: center;
 }
 
